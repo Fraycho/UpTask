@@ -37,6 +37,25 @@ function validarRegistro(e){
         // Retorno de datos
         xhr.onload = function(){
             if(this.status == 200){
+                var respuesta = JSON.parse(xhr.responseText);
+
+                if(respuesta.respuesta === 'correcto'){
+                    // Nuevo usuario
+                    if(respuesta.tipo === 'crear'){
+                        swal({
+                            type: 'success',
+                            title: 'Usuario Creado!',
+                            text: 'El usuario se creó correctamente'                            
+                        });
+                    }
+                }else{
+                    // Error
+                    swal({
+                        type: 'error',
+                        title: 'Error!',
+                        text: 'Hubo un error!'
+                    });
+                }
                 console.log(JSON.parse(xhr.responseText));
             }
         }
