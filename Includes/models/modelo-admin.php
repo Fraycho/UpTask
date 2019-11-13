@@ -25,7 +25,7 @@ if($accion === 'crear'){
             $respuesta = array(
                 'respuesta' => 'correcto',
                 'id_insertado' => $stmt->insert_id,
-                'tipo' => 'crear'
+                'tipo' => $accion
             );
         } else {
             $respuesta = array(
@@ -58,18 +58,36 @@ if($accion === 'login'){
         // Loguear el usuario
         $stmt->bind_result($id_usuario, $nombre_usuario, $contraseña_usuario);
         $stmt->fetch();
+
         if($nombre_usuario){
-            $respuesta = array(
-                'respuesta' => 'correcto',
-                'id' => $id_usuario,
-                'nombre' => $nombre_usuario,
-                'contraseña' => $contraseña_usuario,
-            );
+            // EL usuario existe, verificar contraseña
+            if(password_verify($contraseña, $contraseña_usuario)){
+                // Iniciar la sesion
+                session_start();
+                $_SESSION['nombre'] = $nombre_usuario;
+                $_SESSION['id'] = $id_usuario;
+                $_SESSION['login'] = true;
+ 
+                // Login correcto
+                $respuesta = array(
+                    'respuesta' => 'correcto',
+                    'id' => $id_usuario,
+                    'nombre' => $nombre_usuario,
+                    'tipo' => $accion
+                );
+            }else{
+                // Login incorrecto
+                $respuesta = array(
+                    'resultado' => 'contraseña incorrecta'
+                );
+            }
+            
         } else {
             $respuesta = array(
                 'error' => 'El usuario no existe'
             );
         }
+
         $stmt->close();
         $conexion->close();
     } catch (Exception $e) {

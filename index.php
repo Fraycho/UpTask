@@ -1,14 +1,12 @@
 <?php
+    include "includes/functions/sesiones.php";
     include "includes/functions/funciones.php";
-    include "includes/templates/header.php"; 
+    include "includes/templates/header.php";
+    include "includes/templates/barra.php";
 ?>
 
-<div class="barra">
-    <h1>UpTask - Administración de Proyectos</h1>
-    <a href="#">Cerrar Sesión</a>
-</div>
-
 <div class="contenedor">
+
     <aside class="contenedor-proyectos">
         <div class="panel crear-proyecto">
             <a href="#" class="boton">Nuevo Proyecto <i class="fas fa-plus"></i> </a>

@@ -1,8 +1,17 @@
 <?php
+    session_start();
     include "includes/functions/funciones.php";
     include "includes/functions/conexion.php";
     include "includes/templates/header.php";
 ?>
+
+<?php
+
+    if(isset($_GET['cerrar_sesion'])){
+        $_SESSION = array();
+    }
+?>
+
 
     <div class="contenedor-formulario">
         <h1>UpTask</h1>

@@ -36,7 +36,7 @@ function validarRegistro(e){
 
         // Retorno de datos
         xhr.onload = function(){
-            if(this.status == 200){
+            if(this.status === 200){
                 var respuesta = JSON.parse(xhr.responseText);
 
                 if(respuesta.respuesta === 'correcto'){
@@ -47,6 +47,17 @@ function validarRegistro(e){
                             title: 'Usuario Creado!',
                             text: 'El usuario se creó correctamente'                            
                         });
+                    } else if(respuesta.tipo === 'login') {
+                        swal({
+                            type: 'success',
+                            title: 'Login Correcto',
+                            text: 'Presiona OK para abrir el DashBoard'                            
+                        })
+                        .then(resultado => {
+                            if(resultado.value){
+                                window.location.href = "index.php";
+                            }
+                        })
                     }
                 }else{
                     // Error
