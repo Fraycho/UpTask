@@ -29,7 +29,7 @@ if($accion === 'crear'){
             );
         } else {
             $respuesta = array(
-                'respuesta' => 'error'
+                'respuesta' => $stmt->error
             );
         }
         $stmt->close();
