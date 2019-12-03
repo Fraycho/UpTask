@@ -20,3 +20,17 @@ function obtenerProyectos(){
         return false;
     }
 }
+
+
+    // Obtener nombre del proyecto
+
+function obtenerNombreProyecto($id = null){
+    include 'conexion.php';
+
+    try {
+        return $conexion->query("SELECT nombre FROM proyectos WHERE id = {$id}");       
+    } catch (Exception $e) {
+        echo "Error!: " . $e->getMessage();
+        return false;
+    } 
+}
