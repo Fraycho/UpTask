@@ -6,6 +6,7 @@ var listaProyectos = document.querySelector('ul#proyectos');
 
 function eventListeners(){
     document.querySelector('.crear-proyecto a').addEventListener('click', nuevoProyecto);
+    document.querySelector('.nueva-tarea').addEventListener('click', agregarTarea);
 }
 
 function nuevoProyecto(e){
@@ -93,5 +94,85 @@ function guardarProyectoDB(nombreProyecto){
 
     // Enviar datos
     xhr.send(datos);
+
+}
+
+// Agregar tarea al proyecto actual
+
+function agregarTarea(e){
+    e.preventDefault();
+
+    const nombreTarea = document.querySelector('.nombre-tarea').value;
+    if(nombreTarea === ''){
+        swal({
+            type: 'error',
+            title: 'Error!',
+            text: 'Una tarea no puede ir vacía!'
+        })
+    } else {
+        // Insertar en PHP
+        const datos = new FormData();
+        datos.append('tarea', nombreTarea);
+        datos.append('accion', 'crear');
+        datos.append('id_proyecto', document.querySelector('#id_proyecto').value);
+
+        // AJAX
+
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'includes/models/modelo-tareas.php', true);
+        xhr.onload = function(){
+            if(this.status === 200){
+                // Todo correcto
+                const respuesta = JSON.parse(xhr.responseText);
+                console.log(respuesta);
+
+                const resultado = respuesta.respuesta,
+                      tarea = respuesta.tarea,
+                      id_insertado = respuesta.id_insertado,
+                      tipo = respuesta.tipo;
+
+                if(resultado ===  "correcto"){
+                    if(tipo === "crear"){
+                        // Alerta
+                        swal({
+                            type: 'success',
+                            title: 'Tarea Creada',
+                            text: 'La tarea: ' + tarea + ' se creó correctamente!'
+                        })
+
+                        // Construir template
+                        const nuevaTarea = document.createElement('li');
+                        // Agregar id
+                        nuevaTarea.id = 'tarea: ' + id_insertado;
+                        // Clase
+                        nuevaTarea.classList.add('tarea');
+                        // Construir el HTML
+                        nuevaTarea.innerHTML = `
+                            <p>${tarea}</p>
+                            <div class="acciones">
+                                <i class ="far fa-check-circle"></i>
+                                <i class ="fas fa-trash"></i>
+                            </div>
+                        `;
+                        // Insertar en el DOM
+                        const listado = document.querySelector('.listado-pendientes ul');
+                        listado.appendChild(nuevaTarea);
+
+                        // Limpiar formulario
+                        document.querySelector('.agregar-tarea').reset();
+                    }
+                    
+                } else {
+                    swal({
+                        type: 'error',
+                        title: 'Error!',
+                        text: 'Hubo un error!'
+                    })
+                }
+            }
+        }
+
+        xhr.send(datos);
+    }
 
 }
