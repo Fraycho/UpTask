@@ -21,7 +21,6 @@ function obtenerProyectos(){
     }
 }
 
-
     // Obtener nombre del proyecto
 
 function obtenerNombreProyecto($id = null){
@@ -29,6 +28,19 @@ function obtenerNombreProyecto($id = null){
 
     try {
         return $conexion->query("SELECT nombre FROM proyectos WHERE id = {$id}");       
+    } catch (Exception $e) {
+        echo "Error!: " . $e->getMessage();
+        return false;
+    } 
+}
+
+// Obtener todas las tareas del proyecto
+
+function obtenerTareasProyecto($id = null){
+    include 'conexion.php';
+
+    try {
+        return $conexion->query("SELECT id, nombre, estado FROM tareas WHERE id_proyecto = {$id}");       
     } catch (Exception $e) {
         echo "Error!: " . $e->getMessage();
         return false;

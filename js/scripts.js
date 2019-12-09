@@ -7,6 +7,9 @@ var listaProyectos = document.querySelector('ul#proyectos');
 function eventListeners(){
     document.querySelector('.crear-proyecto a').addEventListener('click', nuevoProyecto);
     document.querySelector('.nueva-tarea').addEventListener('click', agregarTarea);
+
+    // Botones para las acciones de las Tareas
+    document.querySelector('.listado-pendientes').addEventListener('click', accionesTareas);
 }
 
 function nuevoProyecto(e){
@@ -62,7 +65,7 @@ function guardarProyectoDB(nombreProyecto){
                     // Inyectar el HTML
                     const nuevoProyecto = document.createElement('li');
                     nuevoProyecto.innerHTML = `
-                        <a href="index.php?id_proyecto=${id_proyecto}" id="${id_proyecto}">
+                        <a href="index.php?id_proyecto=${id_proyecto}" id="proyecto:${id_proyecto}">
                             ${proyecto}
                         </a>
                     `;
@@ -175,4 +178,51 @@ function agregarTarea(e){
         xhr.send(datos);
     }
 
+}
+
+// Cambiar estado de las tareas o eliminarlas
+
+function accionesTareas(e){
+    e.preventDefault();
+
+    if(e.target.classList.contains('fa-check-circle')){
+
+        if(e.target.classList.contains('completo')){
+            e.target.classList.remove('completo');
+            cambiarEstadoTarea(e.target, 0);
+        }else{
+            e.target.classList.add('completo');
+            cambiarEstadoTarea(e.target, 1);
+        }
+    }
+
+    if(e.target.classList.contains('fa-trash')){
+        console.log('Borrar');
+    }
+}
+
+// Tarea completa o incompleta
+
+function cambiarEstadoTarea(tarea, estado){
+    const idTarea = tarea.parentElement.parentElement.id.split(':');
+
+    // Datos
+    const datos = new FormData();
+    datos.append('id', idTarea[1]);
+    datos.append('accion', 'actualizar');
+    datos.append('estado', estado);
+
+    // Lammado a AJAX
+    const xhr = new XMLHttpRequest();
+
+    xhr.open('POST', 'includes/models/modelo-tareas.php', true);
+
+    xhr.onload = function(){
+        if(this.status === 200){
+            const respuesta = JSON.parse(xhr.responseText);
+            console.log(respuesta);
+        }
+    }
+
+    xhr.send(datos);
 }

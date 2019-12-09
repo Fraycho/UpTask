@@ -1,10 +1,11 @@
 <?php
 
 $accion = $_POST['accion'];
-$id_proyecto = (int) $_POST['id_proyecto'];
-$tarea = $_POST['tarea'];
 
 if($accion === 'crear'){
+
+    $id_proyecto = (int) $_POST['id_proyecto'];
+    $tarea = $_POST['tarea'];
 
     // Conexion
     include "../functions/conexion.php";
@@ -37,4 +38,10 @@ if($accion === 'crear'){
 
     echo json_encode($respuesta);
   
+}
+
+if($accion === 'actualizar'){
+    $estado = $_POST['estado'];
+    
+    echo json_encode($_POST);
 }
