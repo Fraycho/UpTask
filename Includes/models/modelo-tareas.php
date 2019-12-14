@@ -41,7 +41,70 @@ if($accion === 'crear'){
 }
 
 if($accion === 'actualizar'){
+    $id_tarea = (int) $_POST['id'];
     $estado = $_POST['estado'];
+
+    // Conexion
+    include "../functions/conexion.php";
+
+    try {
+
+        $stmt = $conexion->prepare("UPDATE tareas set estado = ? WHERE id = ?");
+        $stmt->bind_param('ii', $estado, $id_tarea);
+        $stmt->execute();
+        if($stmt->affected_rows > 0){
+            $respuesta = array(
+                'respuesta' => 'correcto',
+            );
+        } else {
+            $respuesta = array(
+                'respuesta' => $stmt->error
+            );
+        }
+        $stmt->close();
+        $conexion->close();
+
+    } catch (Exception $e) {
+        $respuesta = array(
+            'error' => $e->getMessage()
+        );
+    }
+
+    echo json_encode($respuesta);
     
-    echo json_encode($_POST);
+}
+
+
+if($accion === 'eliminar'){
+    $id_tarea = (int) $_POST['id'];
+
+    // Conexion
+    include "../functions/conexion.php";
+
+    try {
+
+        $stmt = $conexion->prepare("DELETE from tareas WHERE id = ?");
+        $stmt->bind_param('i', $id_tarea);
+        $stmt->execute();
+        if($stmt->affected_rows > 0){
+            $respuesta = array(
+                'respuesta' => 'correcto',
+                'ID de tarea borrada' => $id_tarea
+            );
+        } else {
+            $respuesta = array(
+                'respuesta' => $stmt->error
+            );
+        }
+        $stmt->close();
+        $conexion->close();
+
+    } catch (Exception $e) {
+        $respuesta = array(
+            'error' => $e->getMessage()
+        );
+    }
+
+    echo json_encode($respuesta);
+    
 }

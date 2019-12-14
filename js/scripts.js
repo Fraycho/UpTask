@@ -143,6 +143,12 @@ function agregarTarea(e){
                             text: 'La tarea: ' + tarea + ' se creó correctamente!'
                         })
 
+                        // Seleccionar parrafo de proyecto vacio
+                        const proyectoVacio = document.querySelectorAll('.lista-vacia');
+                        if(proyectoVacio.length > 0){
+                            document.querySelector('.lista-vacia').remove();
+                        }
+
                         // Construir template
                         const nuevaTarea = document.createElement('li');
                         // Agregar id
@@ -185,6 +191,8 @@ function agregarTarea(e){
 function accionesTareas(e){
     e.preventDefault();
 
+    
+    // Complero o incompleto
     if(e.target.classList.contains('fa-check-circle')){
 
         if(e.target.classList.contains('completo')){
@@ -195,11 +203,42 @@ function accionesTareas(e){
             cambiarEstadoTarea(e.target, 1);
         }
     }
+    
 
+    // Borrar Tarea
     if(e.target.classList.contains('fa-trash')){
-        console.log('Borrar');
+
+        swal({
+            title: "Está Seguro(a)?",
+            text: "Esta acción no se puede deshacer",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, Borrar!',
+            cancelButtonText: 'Cancelar'
+        })
+        .then((result) => {
+            if (result.value) {
+                const tareaEliminar = e.target.parentElement.parentElement;
+
+                // Borrar de la DB
+                eliminarTarea(tareaEliminar);
+
+                // Borrar del DOM
+                tareaEliminar.remove();
+
+                swal(
+                    "Eliminado!",
+                    "La tarea fue eliminada",
+                    "success"
+                );
+            }
+        });
     }
 }
+
+
 
 // Tarea completa o incompleta
 
@@ -221,6 +260,40 @@ function cambiarEstadoTarea(tarea, estado){
         if(this.status === 200){
             const respuesta = JSON.parse(xhr.responseText);
             console.log(respuesta);
+        }
+    }
+
+    xhr.send(datos);
+}
+
+
+// Elminar tareas de la DB
+
+function eliminarTarea(tarea){
+    const idTarea = tarea.id.split(':');
+    console.log(tarea);
+
+    // Datos
+    const datos = new FormData();
+    datos.append('id', idTarea[1]);
+    datos.append('accion', 'eliminar');
+
+    // Lammado a AJAX
+    const xhr = new XMLHttpRequest();
+
+    xhr.open('POST', 'includes/models/modelo-tareas.php', true);
+
+    xhr.onload = function(){
+        if(this.status === 200){
+            const respuesta = JSON.parse(xhr.responseText);
+            console.log(respuesta);
+
+            // Comprobar tareas restantes
+            const listaTareas = document.querySelectorAll('li.tarea');
+            console.log(listaTareas);
+            if(listaTareas.length === 0){
+                document.querySelector('.listado-pendientes ul').innerHTML = "<p class='lista-vacia'>No hay tareas en este proyecto</p>";
+            }
         }
     }
 
