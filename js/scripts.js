@@ -5,7 +5,16 @@ eventListeners();
 var listaProyectos = document.querySelector('ul#proyectos');
 
 function eventListeners(){
+
+    // Document Ready
+    document.addEventListener('DOMContentLoaded', function(){
+        actualizarProgreso();
+    });
+
+    // Crear proyecto
     document.querySelector('.crear-proyecto a').addEventListener('click', nuevoProyecto);
+
+    // Nueva tarea
     document.querySelector('.nueva-tarea').addEventListener('click', agregarTarea);
 
     // Botones para las acciones de las Tareas
@@ -186,6 +195,7 @@ function agregarTarea(e){
 
 }
 
+
 // Cambiar estado de las tareas o eliminarlas
 
 function accionesTareas(e){
@@ -237,7 +247,6 @@ function accionesTareas(e){
         });
     }
 }
-
 
 
 // Tarea completa o incompleta
@@ -298,4 +307,21 @@ function eliminarTarea(tarea){
     }
 
     xhr.send(datos);
+}
+
+
+// Actualiza el avance de los proyectos
+
+function actualizarProgreso(){
+    // Obtener tareas del DOM
+    const tareas = document.querySelectorAll('li.tarea');
+
+    // Obtener tareas completadas
+    const tareasCompletadas = document.querySelectorAll('i.completo');
+
+    // Porcentaje de avance
+    const avance = Math.round((tareasCompletadas.length / tareas.length) * 100);
+
+
+    console.log(avance);
 }
