@@ -90,6 +90,9 @@ function guardarProyectoDB(nombreProyecto){
                         if(resultado.value){
                             // Redireccionar
                             window.location.href = "index.php?id_proyecto=" + id_proyecto;
+
+                            // Actualizar progreso
+                            actualizarProgreso();
                         }
                     });
                 }
@@ -178,6 +181,9 @@ function agregarTarea(e){
 
                         // Limpiar formulario
                         document.querySelector('.agregar-tarea').reset();
+
+                        // Actualizar progreso
+                        actualizarProgreso();
                     }
                     
                 } else {
@@ -202,7 +208,7 @@ function accionesTareas(e){
     e.preventDefault();
 
     
-    // Complero o incompleto
+    // Completo o incompleto
     if(e.target.classList.contains('fa-check-circle')){
 
         if(e.target.classList.contains('completo')){
@@ -269,10 +275,14 @@ function cambiarEstadoTarea(tarea, estado){
         if(this.status === 200){
             const respuesta = JSON.parse(xhr.responseText);
             console.log(respuesta);
+
+            // Actualizar progreso
+            actualizarProgreso();
         }
     }
 
     xhr.send(datos);
+
 }
 
 
@@ -303,6 +313,9 @@ function eliminarTarea(tarea){
             if(listaTareas.length === 0){
                 document.querySelector('.listado-pendientes ul').innerHTML = "<p class='lista-vacia'>No hay tareas en este proyecto</p>";
             }
+
+            // Actualizar progreso
+            actualizarProgreso();
         }
     }
 
@@ -322,6 +335,8 @@ function actualizarProgreso(){
     // Porcentaje de avance
     const avance = Math.round((tareasCompletadas.length / tareas.length) * 100);
 
+    // Asignar el avance a la barra
+    const porcentaje = document.querySelector('#porcentaje');
+    porcentaje.style.width = avance + '%';
 
-    console.log(avance);
 }
